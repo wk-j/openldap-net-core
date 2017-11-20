@@ -63,9 +63,10 @@ namespace OpenLDAP
             connection.Connect("192.168.0.20", 389);
             connection.Bind("cn=ldapadm,dc=itzgeek,dc=local", "admin");
 
-            //var searchBase = "cn=itzgeek,dc=local";
-            //var filter = "objectclass=*";
-            //var search = connection.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
+            var searchBase = "cn=itzgeek,dc=local";
+            var filter = "(objectClass=*)";
+            var search = connection.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
+            Console.WriteLine($"-- count | {search.Count}");
 
             try
             {
