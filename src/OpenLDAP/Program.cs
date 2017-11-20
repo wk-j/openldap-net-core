@@ -23,9 +23,6 @@ namespace OpenLDAP
             };
 
             var dn = $"cn=Karlsberg,{baseDn}";
-
-            Console.WriteLine($"-- dn | {dn}");
-
             return new LdapEntry(dn, attr);
         }
 
@@ -41,7 +38,21 @@ namespace OpenLDAP
                 var searchBase = "cn=itzgeek,dc=local";
                 var filter = "(objectClass=*)";
                 var search = connection.Search(searchBase, LdapConnection.SCOPE_SUB, filter, null, false);
+                if (search.hasMore())
+                {
+                    try
+                    {
+                        var next = search.next();
+                        Console.WriteLine($"-- next | {0}", next.DN);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"-- search | {ex.Message}");
+                        Console.WriteLine(ex.Demystify());
+                    }
+                }
                 Console.WriteLine($"-- count | {search.Count}");
+                Console.WriteLine($"-- control | {search.ResponseControls}");
             }
 
             void addEntry()
@@ -49,15 +60,19 @@ namespace OpenLDAP
                 try
                 {
                     var entry = NewLdapEntry(baseDn: "cn=ldapadm,cn=itzgeek,dc=local");
+                    Console.WriteLine($"-- new dn | {entry.DN}");
+
                     connection.Add(entry);
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"-- add entry | {ex.Message}");
                     Console.WriteLine(ex.Demystify());
                 }
             }
 
             addEntry();
+            searchAll();
         }
     }
 }
